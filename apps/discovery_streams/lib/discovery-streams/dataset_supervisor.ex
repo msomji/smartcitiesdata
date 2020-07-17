@@ -9,6 +9,7 @@ defmodule DiscoveryStreams.DatasetSupervisor do
   def ensure_started(start_options) do
     dataset = Keyword.fetch!(start_options, :dataset)
     stop_dataset_supervisor(dataset.id)
+    start_options |> IO.inspect(label: "dataset_supervisor.ex:12")
 
     {:ok, _pid} =
       DynamicSupervisor.start_child(DiscoveryStreams.Dynamic.Supervisor, {DiscoveryStreams.DatasetSupervisor, start_options})

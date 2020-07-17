@@ -307,10 +307,6 @@ defmodule E2ETest do
 
     @tag capture_log: true
     test "is available through socket connection", %{streaming_dataset: ds} do
-      eventually(fn ->
-        assert "#{Application.get_env(:discovery_streams, :topic_prefix)}#{ds.id}" in DiscoveryStreams.TopicSubscriber.list_subscribed_topics()
-      end)
-
       {:ok, _, _} =
         socket(DiscoveryStreamsWeb.UserSocket, "kenny", %{})
         |> subscribe_and_join(
@@ -319,7 +315,7 @@ defmodule E2ETest do
           %{}
         )
 
-      assert_push("update", %{"one" => true, "three" => 10, "two" => "foobar"}, 30_000)
+      assert_push("update", %{"one" => true, "three" => 10, "two" => "foobar"}, 55_000)
     end
 
     test "forklift sends event to update last ingested time for streaming datasets", %{

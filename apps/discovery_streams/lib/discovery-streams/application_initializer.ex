@@ -1,4 +1,4 @@
-defmodule Application.Initializer do
+defmodule DiscoveryStreams.Application.Initializer do
   @moduledoc false
 
   @callback do_init(keyword()) :: :ok | {:error, term()}

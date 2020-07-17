@@ -1,6 +1,6 @@
 defmodule DiscoveryStreams.Init do
   @moduledoc false
-  use Application.Initializer
+  use DiscoveryStreams.Application.Initializer
 
   @instance DiscoveryStreams.Application.instance()
 
