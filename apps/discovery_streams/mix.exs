@@ -34,18 +34,18 @@ defmodule DiscoveryStreams.Mixfile do
 
   defp deps do
     [
-      {:brook, "~> 0.4.0"},
+      {:brook, "~> 0.6.0"},
       {:cachex, "~> 3.0"},
       {:checkov, "~> 0.4", only: :test},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
       {:divo_kafka, "~> 0.1.5", only: [:integration]},
       {:divo, "~> 1.1", only: [:dev, :integration]},
       {:divo_redis, "~> 0.1", only: [:integration]},
-      {:elsa, "~> 0.10.0", override: true},
+      {:elsa, "~> 0.12.3", override: true},
       {:ex_doc, "~> 0.19", only: [:test, :integration], runtime: false},
       {:httpoison, "~> 1.6"},
       {:kaffe, "~> 1.14"},
-      {:libcluster, "~> 3.1"},
+      {:libcluster, "~> 3.2"},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:patiently, "~> 0.2", only: [:test, :integration], override: true},
       {:phoenix, "~> 1.4"},

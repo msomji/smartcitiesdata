@@ -4,6 +4,9 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
   alias SmartCity.TestDataGenerator, as: TDG
   import SmartCity.TestHelper
   import SmartCity.Event, only: [data_ingest_start: 0, dataset_delete: 0]
+  use Phoenix.ChannelTest
+
+  @endpoint DiscoveryStreamsWeb.Endpoint
 
   @instance :discovery_streams
   @endpoints Application.get_env(:kaffe, :consumer)[:endpoints]
@@ -65,6 +68,36 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
       |> HTTPoison.get!()
 
     refute headers |> Map.new() |> Map.has_key?("server")
+  end
+
+  # test "discovery_streams reads data from kafka and exposes it to the world" do
+
+  # end
+
+  test "is available through socket connection" do
+    dataset = TDG.create_dataset(id: Faker.UUID.v4(), technical: %{sourceType: "stream"})
+    Brook.Event.send(@instance, data_ingest_start(), :author, dataset)
+
+    "transformed-#{dataset.id}" |> IO.inspect(label: "topic_subscriber_test.exs:81")
+    eventually(fn ->
+      assert Elsa.Topic.exists?(@endpoints, "transformed-#{dataset.id}")
+      assert "#{Application.get_env(:discovery_streams, :topic_prefix)}#{dataset.id}" in DiscoveryStreams.TopicSubscriber.list_subscribed_topics()
+    end)
+
+    {:ok, _, _} =
+      socket(DiscoveryStreamsWeb.UserSocket, "kenny", %{})
+      |> subscribe_and_join(
+        DiscoveryStreamsWeb.StreamingChannel,
+        "streaming:#{dataset.technical.systemName}",
+        %{}
+      )
+
+
+    datum = TDG.create_data(%{dataset_id: dataset.id, payload: %{"one" => true, "three" => 10, "two" => "foobar"}})
+
+    Task.async(fn -> SmartCity.KafkaHelper.stream_messages([datum], "transformed-#{dataset.id}") end)
+
+    assert_push("update", %{"one" => true, "three" => 10, "two" => "foobar"}, 45_000)
   end
 
   defp validate_subscribed_topics(expected) do
