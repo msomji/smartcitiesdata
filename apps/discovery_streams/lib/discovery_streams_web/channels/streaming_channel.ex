@@ -15,15 +15,18 @@ defmodule DiscoveryStreamsWeb.StreamingChannel do
   intercept([@update_event])
 
   def join(channel, params, socket) do
-    topic = determine_topic(channel)
+    channel
+    "transformed-" <> id = determine_topic(channel)
+    id |> IO.inspect(label: "streaming_channel.ex:20")
 
-    case topic in TopicSubscriber.list_subscribed_topics() do
-      false ->
-        {:error, %{reason: "Channel #{channel} does not exist"}}
 
-      true ->
+    case Brook.get(:discovery_streams, :streaming_datasets_by_id, id) do
+      {:ok, system_name} ->
         send(self(), :after_join)
         {:ok, assign(socket, :filter, create_filter_rules(params))}
+
+      _ ->
+        {:error, %{reason: "Channel #{channel} does not exist"}}
     end
   end
 
@@ -73,6 +76,7 @@ defmodule DiscoveryStreamsWeb.StreamingChannel do
     |> determine_system_name()
     |> get_dataset_id()
     |> String.to_atom()
+    |> IO.inspect(label: "streaming_channel.ex:79")
     |> Cachex.stream!(query)
     |> Stream.filter(filter)
     |> Enum.each(fn msg -> push(socket, @update_event, msg) end)

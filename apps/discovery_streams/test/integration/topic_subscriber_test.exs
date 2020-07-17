@@ -81,9 +81,9 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
     "transformed-#{dataset.id}" |> IO.inspect(label: "topic_subscriber_test.exs:81")
     eventually(fn ->
       assert Elsa.Topic.exists?(@endpoints, "transformed-#{dataset.id}")
-      assert "#{Application.get_env(:discovery_streams, :topic_prefix)}#{dataset.id}" in DiscoveryStreams.TopicSubscriber.list_subscribed_topics()
     end)
 
+    Process.sleep(2000)
     {:ok, _, _} =
       socket(DiscoveryStreamsWeb.UserSocket, "kenny", %{})
       |> subscribe_and_join(

@@ -3,14 +3,21 @@ defmodule DiscoveryStreams.EventHandler do
     Event Stream Event Handler
   """
   alias SmartCity.Dataset
+  alias DiscoveryStreams.CachexSupervisor
   use Brook.Event.Handler
   import SmartCity.Event, only: [data_ingest_start: 0, dataset_update: 0, dataset_delete: 0]
   require Logger
 
   def handle_event(%Brook.Event{
         type: data_ingest_start(),
-        data: %Dataset{id: id, technical: %{sourceType: "stream", private: false, systemName: system_name}}
+        data: %Dataset{id: id, technical: %{sourceType: "stream", private: false, systemName: system_name}} = dataset
       }) do
+    DiscoveryStreams.DatasetProcessor.start(dataset)
+
+    id
+    |> String.to_atom()
+    |> CachexSupervisor.create_cache()
+
     save_dataset_to_viewstate(id, system_name)
     :ok
   end

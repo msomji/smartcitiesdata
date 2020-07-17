@@ -9,6 +9,8 @@ defmodule DiscoveryStreams.Application do
 
   require Cachex.Spec
 
+  def instance(), do: :discovery_streams_brook
+
   def start(_type, _args) do
     import Supervisor.Spec
 
@@ -25,7 +27,7 @@ defmodule DiscoveryStreams.Application do
         metrics(),
         DiscoveryStreams.CacheGenserver,
         {Brook, Application.get_env(:discovery_streams, :brook)},
-        kaffe(),
+        {DynamicSupervisor, strategy: :one_for_one, name: DiscoveryStreams.Dynamic.Supervisor},
         DiscoveryStreamsWeb.Presence,
         DiscoveryStreamsWeb.Presence.Server
       ]
