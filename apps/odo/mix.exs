@@ -26,7 +26,7 @@ defmodule Odo.MixProject do
 
   defp deps do
     [
-      {:brook, "~> 0.4.0"},
+      {:brook, "~> 0.6.0"},
       {:credo, "~> 1.0", only: :dev, runtime: false},
       {:distillery, "~> 2.1"},
       {:ex_aws, "~> 2.1"},

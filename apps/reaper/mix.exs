@@ -41,7 +41,7 @@ defmodule Reaper.MixProject do
 
   defp deps do
     [
-      {:brook, "~> 0.4.0"},
+      {:brook, "~> 0.6.0"},
       {:cachex, "~> 3.2"},
       {:castore, "~> 0.1"},
       {:dead_letter, in_umbrella: true},
@@ -56,7 +56,7 @@ defmodule Reaper.MixProject do
       {:poison, "~> 3.1", override: true},
       {:jason, "~> 1.1"},
       {:jaxon, "~> 1.0"},
-      {:libcluster, "~> 3.1"},
+      {:libcluster, "~> 3.2"},
       {:libvault, "~> 0.2"},
       {:mint, "~> 0.4"},
       {:nimble_csv, "~> 0.6.0"},

@@ -305,6 +305,7 @@ defmodule E2ETest do
       )
     end
 
+    @tag capture_log: true
     test "is available through socket connection", %{streaming_dataset: ds} do
       eventually(fn ->
         assert "#{Application.get_env(:discovery_streams, :topic_prefix)}#{ds.id}" in DiscoveryStreams.TopicSubscriber.list_subscribed_topics()

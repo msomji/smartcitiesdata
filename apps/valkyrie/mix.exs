@@ -34,7 +34,7 @@ defmodule Valkyrie.MixProject do
   defp deps do
     [
       {:benchee, "~> 1.0", only: [:integration]},
-      {:brook, "~> 0.4"},
+      {:brook, "~> 0.6.0"},
       {:cachex, "~> 3.1"},
       {:checkov, "~> 0.5.0", only: [:test]},
       {:credo, "~> 1.0", only: [:dev, :test], runtime: false},
@@ -46,7 +46,7 @@ defmodule Valkyrie.MixProject do
       {:excoveralls, "~> 0.11.1", only: :test},
       {:tasks, in_umbrella: true, only: :dev},
       {:jason, "~> 1.1"},
-      {:libcluster, "~> 3.1"},
+      {:libcluster, "~> 3.2"},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:observer_cli, "~> 1.4"},
       {:off_broadway_kafka, "~> 0.4.0"},

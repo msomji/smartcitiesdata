@@ -40,7 +40,7 @@ defmodule DiscoveryApi.Mixfile do
       {:ibrowse, "~> 4.4"},
       {:libvault, "~> 0.2"},
       {:sweet_xml, "~> 0.6"},
-      {:brook, "~> 0.4"},
+      {:brook, "~> 0.6.0"},
       {:bypass, "~> 1.0", only: [:test, :integration]},
       {:cachex, "~> 3.0"},
       {:corsica, "~> 1.0"},

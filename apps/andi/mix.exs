@@ -36,7 +36,7 @@ defmodule Andi.MixProject do
     [
       {:accessible, "~> 0.2.1"},
       {:atomic_map, "~> 0.9"},
-      {:brook, "~> 0.4.0"},
+      {:brook, "~> 0.6.0"},
       {:bypass, "~> 1.0", only: [:test, :integration]},
       {:checkov, "~> 0.5.0", only: [:test, :integration]},
       {:credo, "~> 1.1", only: [:dev, :test], runtime: false},
