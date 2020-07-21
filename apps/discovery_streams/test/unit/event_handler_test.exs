@@ -19,6 +19,8 @@ defmodule DiscoveryStreams.EventHandlerTest do
           technical: %{sourceType: "stream", private: false, systemName: "fake_system_name"}
         )
 
+      expect DiscoveryStreams.DatasetProcessor.start(dataset), return: :ok
+
       event = Brook.Event.new(type: data_ingest_start(), data: dataset, author: :author)
 
       response = DiscoveryStreams.EventHandler.handle_event(event)
@@ -67,6 +69,10 @@ defmodule DiscoveryStreams.EventHandlerTest do
           technical: %{sourceType: source_type, private: private, systemName: system_name}
         )
 
+      if delete_called do
+        expect DiscoveryStreams.DatasetProcessor.delete(dataset.id), return: :ok
+      end
+
       event = Brook.Event.new(type: dataset_update(), data: dataset, author: :author)
 
       DiscoveryStreams.EventHandler.handle_event(event)
@@ -89,6 +95,7 @@ defmodule DiscoveryStreams.EventHandlerTest do
       allow(DiscoveryStreams.TopicHelper.delete_input_topic(any()), return: :ok)
 
       event = Brook.Event.new(type: dataset_delete(), data: dataset, author: :author)
+      expect DiscoveryStreams.DatasetProcessor.delete(dataset.id), return: :ok
 
       DiscoveryStreams.EventHandler.handle_event(event)
       assert_called(Brook.ViewState.delete(:streaming_datasets_by_id, dataset.id))

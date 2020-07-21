@@ -8,10 +8,15 @@ defmodule DiscoveryStreams.MessageHandler do
   require Poison
   require GenServer
   alias StreamingMetrics.Hostname
+  use Elsa.Consumer.MessageHandler
 
   @metric_collector Application.get_env(:streaming_metrics, :collector)
 
-  def handle_messages(messages) do
+  def init(args) do
+    {:ok, []}
+  end
+
+  def handle_messages(messages, state) do
     json_messages =
       messages
       |> Enum.map(&log_message/1)
@@ -21,6 +26,8 @@ defmodule DiscoveryStreams.MessageHandler do
 
     Enum.each(json_messages, &add_to_cache/1)
     Enum.each(json_messages, &broadcast/1)
+
+    {:ack, state}
   end
 
   defp record_outbound_count_metrics(messages) do

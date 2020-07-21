@@ -23,7 +23,7 @@ defmodule Valkyrie.Broadway do
     input = Keyword.fetch!(opts, :input)
 
     [
-      name: :"#{dataset.id}_broadway",
+      name: :"#{dataset.id}_valkyrie_broadway",
       producers: [
         default: [
           module: {@producer_module, input},

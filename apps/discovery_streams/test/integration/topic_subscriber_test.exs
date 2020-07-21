@@ -9,7 +9,7 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
   @endpoint DiscoveryStreamsWeb.Endpoint
 
   @instance :discovery_streams
-  @endpoints Application.get_env(:kaffe, :consumer)[:endpoints]
+  @endpoints Application.get_env(:discovery_streams, :elsa_brokers)
   @input_topic_prefix Application.get_env(:discovery_streams, :topic_prefix, "transformed-")
 
   test "subscribes to any non internal use topic" do
@@ -20,7 +20,6 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
 
     expected = ["transformed-#{dataset1.id}"]
     expected_cache = [dataset1.id]
-    validate_subscribed_topics(expected)
     validate_caches_exist(expected_cache)
 
     dataset2 = TDG.create_dataset(id: Faker.UUID.v4(), technical: %{sourceType: "stream", private: false})
@@ -28,7 +27,6 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
 
     expected = ["transformed-#{dataset1.id}", "transformed-#{dataset2.id}"]
     expected_cache = [dataset1.id, dataset2.id]
-    validate_subscribed_topics(expected)
     validate_caches_exist(expected_cache)
   end
 
@@ -78,12 +76,10 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
     dataset = TDG.create_dataset(id: Faker.UUID.v4(), technical: %{sourceType: "stream"})
     Brook.Event.send(@instance, data_ingest_start(), :author, dataset)
 
-    "transformed-#{dataset.id}" |> IO.inspect(label: "topic_subscriber_test.exs:81")
     eventually(fn ->
       assert Elsa.Topic.exists?(@endpoints, "transformed-#{dataset.id}")
     end)
 
-    Process.sleep(2000)
     {:ok, _, _} =
       socket(DiscoveryStreamsWeb.UserSocket, "kenny", %{})
       |> subscribe_and_join(
@@ -100,16 +96,6 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
     assert_push("update", %{"one" => true, "three" => 10, "two" => "foobar"}, 45_000)
   end
 
-  defp validate_subscribed_topics(expected) do
-    Patiently.wait_for!(
-      fn ->
-        MapSet.new(subscribed_topics()) == MapSet.new(expected)
-      end,
-      dwell: 200,
-      max_tries: 50
-    )
-  end
-
   defp validate_caches_exist(expected) do
     Patiently.wait_for!(
       fn ->
@@ -118,9 +104,5 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
       dwell: 200,
       max_tries: 50
     )
-  end
-
-  defp subscribed_topics() do
-    Kaffe.GroupManager.list_subscribed_topics()
   end
 end

@@ -18,11 +18,12 @@ defmodule DiscoveryStreams.EventHandler do
     |> String.to_atom()
     |> CachexSupervisor.create_cache()
 
-    save_dataset_to_viewstate(id, system_name)
+    save_dataset_to_viewstate(dataset)
     :ok
   end
 
   def handle_event(%Brook.Event{type: dataset_update(), data: %Dataset{technical: %{private: true}} = dataset}) do
+    DiscoveryStreams.DatasetProcessor.delete(dataset.id)
     delete_from_viewstate(dataset.id, dataset.technical.systemName)
 
     :ok
@@ -33,6 +34,7 @@ defmodule DiscoveryStreams.EventHandler do
         data: %Dataset{id: id, technical: %{sourceType: source_type, systemName: system_name}}
       })
       when source_type != "stream" do
+    DiscoveryStreams.DatasetProcessor.delete(id)
     delete_from_viewstate(id, system_name)
 
     :ok
@@ -42,20 +44,23 @@ defmodule DiscoveryStreams.EventHandler do
         type: dataset_delete(),
         data: %Dataset{id: id, technical: %{systemName: system_name}}
       }) do
+    DiscoveryStreams.DatasetProcessor.delete(id)
     DiscoveryStreams.TopicHelper.delete_input_topic(id)
     delete_from_viewstate(id, system_name)
   end
 
-  def save_dataset_to_viewstate(id, system_name) do
+  def save_dataset_to_viewstate(%Dataset{id: id, technical: %{systemName: system_name}} = dataset) do
     Logger.debug("#{__MODULE__}: Handling Datatset: #{id} with system_name: #{system_name}")
 
     create(:streaming_datasets_by_id, id, system_name)
     create(:streaming_datasets_by_system_name, system_name, id)
+    create(:streaming_datasets, id, dataset)
   end
 
   defp delete_from_viewstate(id, system_name) do
     Logger.debug("#{__MODULE__}: Deleting Datatset: #{id} with system_name: #{system_name}")
     delete(:streaming_datasets_by_id, id)
     delete(:streaming_datasets_by_system_name, system_name)
+    delete(:streaming_datasets, id)
   end
 end

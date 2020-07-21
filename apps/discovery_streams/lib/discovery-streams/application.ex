@@ -21,6 +21,7 @@ defmodule DiscoveryStreams.Application do
 
     children =
       [
+        {Registry, name: DiscoveryStreams.Registry, keys: :unique},
         DiscoveryStreams.CachexSupervisor,
         supervisor(DiscoveryStreamsWeb.Endpoint, []),
         libcluster(),
@@ -28,6 +29,7 @@ defmodule DiscoveryStreams.Application do
         DiscoveryStreams.CacheGenserver,
         {Brook, Application.get_env(:discovery_streams, :brook)},
         {DynamicSupervisor, strategy: :one_for_one, name: DiscoveryStreams.Dynamic.Supervisor},
+        topic_subscriber(),
         DiscoveryStreamsWeb.Presence,
         DiscoveryStreamsWeb.Presence.Server
       ]
@@ -43,14 +45,13 @@ defmodule DiscoveryStreams.Application do
     end
   end
 
-  defp kaffe do
-    case Application.get_env(:kaffe, :consumer)[:endpoints] do
-      nil ->
+  defp topic_subscriber do
+    case Application.get_env(:discovery_streams, :auto_subscribe, true) do
+      false ->
         []
 
-      _ ->
+      true ->
         [
-          Supervisor.Spec.supervisor(Kaffe.GroupMemberSupervisor, []),
           DiscoveryStreams.TopicSubscriber
         ]
     end

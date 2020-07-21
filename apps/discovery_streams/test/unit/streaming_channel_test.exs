@@ -2,21 +2,26 @@ defmodule DiscoveryStreamsWeb.StreamingChannelTest do
   use DiscoveryStreamsWeb.ChannelCase
   use Placebo
 
-  alias DiscoveryStreams.{CachexSupervisor, TopicSubscriber}
+  alias DiscoveryStreams.CachexSupervisor
   @dataset_1_id "d21d5af6-346c-43e5-891f-8c2c7f28e4ab"
 
   setup do
     CachexSupervisor.create_cache(@dataset_1_id |> String.to_atom())
     Cachex.clear(@dataset_1_id |> String.to_atom())
 
-    allow TopicSubscriber.list_subscribed_topics(),
-      return: ["transformed-#{@dataset_1_id}"]
-
     allow(Brook.get(any(), :streaming_datasets_by_system_name, "shuttle-position"),
       return: {:ok, @dataset_1_id}
     )
 
+    allow(Brook.get(any(), :streaming_datasets_by_id, @dataset_1_id),
+      return: {:ok, "shuttle-position"}
+    )
+
     allow(Brook.get(any(), :streaming_datasets_by_system_name, any()),
+      return: {:error, "does_not_exist"}
+    )
+
+    allow(Brook.get(any(), :streaming_datasets_by_id, any()),
       return: {:error, "does_not_exist"}
     )
 

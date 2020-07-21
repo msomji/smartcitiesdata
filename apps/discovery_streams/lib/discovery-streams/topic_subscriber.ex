@@ -13,8 +13,6 @@ defmodule DiscoveryStreams.TopicSubscriber do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  defdelegate list_subscribed_topics(), to: Kaffe.GroupManager
-
   def init(_args) do
     :timer.send_interval(@interval, :subscribe)
     {:ok, [], {:continue, :subscribe}}
@@ -31,14 +29,14 @@ defmodule DiscoveryStreams.TopicSubscriber do
   end
 
   defp check_for_new_topics_and_subscribe() do
-    (topics_we_should_be_consuming() -- list_subscribed_topics())
+    topics_we_should_be_consuming()
     |> subscribe()
   end
 
   defp topics_we_should_be_consuming() do
-    case Brook.get_all_values(:discovery_streams, :streaming_datasets_by_system_name) do
-      {:ok, items} ->
-        Enum.map(items, &DiscoveryStreams.TopicHelper.topic_name(&1))
+    case Brook.get_all_values(:discovery_streams, :streaming_datasets) do
+      {:ok, datasets} ->
+        datasets
 
       {:error, _} ->
         Logger.warn("Unable to get values from Brook")
@@ -49,19 +47,16 @@ defmodule DiscoveryStreams.TopicSubscriber do
   defp subscribe([]), do: nil
 
   # sobelow_skip ["DOS.StringToAtom"]
-  defp subscribe(topics) do
-    create_topics(topics)
+  defp subscribe(datasets) do
+    Logger.info("Subscribing to public datasets: #{inspect(datasets)}")
 
-    Logger.info("Subscribing to public topics: #{inspect(topics)}")
-    Kaffe.GroupManager.subscribe_to_topics(topics)
-
-    topics
-    |> Enum.map(&DiscoveryStreams.TopicHelper.dataset_id/1)
+    datasets
+    |> Enum.map(fn dataset ->
+      DiscoveryStreams.DatasetProcessor.start(dataset)
+      dataset
+    end)
+    |> Enum.map(fn dataset -> dataset.id end)
     |> Enum.map(&String.to_atom/1)
     |> Enum.each(&CachexSupervisor.create_cache/1)
-  end
-
-  defp create_topics(topics) do
-    Enum.each(topics, &Elsa.create_topic(DiscoveryStreams.TopicHelper.get_endpoints(), &1))
   end
 end

@@ -13,7 +13,7 @@ defmodule DiscoveryStreams.TopicHelper do
   end
 
   def get_endpoints() do
-    Application.get_env(:kaffe, :consumer)[:endpoints]
+    Application.get_env(:discovery_streams, :elsa_brokers)
     |> Enum.map(fn {host, port} -> {to_charlist(host), port} end)
   end
 

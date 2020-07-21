@@ -65,15 +65,19 @@ defmodule DiscoveryStreamsWeb.Presence.Instrumenter do
 
   # sobelow_skip ["DOS.StringToAtom"]
   defp get_gauges do
-    topics =
-      Application.get_env(:kaffe, :consumer)
-      |> Keyword.get(:topics, [])
+    # {:ok, dataset_ids} =
+    #   Brook.get_all_values(:discovery_streams, :streaming_datasets_by_id)
 
-    topics
-    |> Enum.map(&String.replace(&1, "-", "_"))
-    |> Enum.map(&String.to_atom("#{&1}_presence_count"))
-    |> Enum.zip(topics)
-    |> Enum.into(%{})
+    # topics = dataset_ids
+    # |> Enum.map(&DiscoveryStreams.TopicHelper.topic_name/1)
+
+    # topics
+    # |> Enum.map(&String.replace(&1, "-", "_"))
+    # |> Enum.map(&String.to_atom("#{&1}_presence_count"))
+    # |> Enum.zip(topics)
+    # |> Enum.into(%{})
+
+    %{}
   end
 
   defp topic_to_channel("cota-vehicle-positions"), do: "vehicle_position"

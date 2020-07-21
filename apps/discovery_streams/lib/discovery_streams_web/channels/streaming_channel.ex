@@ -6,7 +6,6 @@ defmodule DiscoveryStreamsWeb.StreamingChannel do
   """
   use DiscoveryStreamsWeb, :channel
   alias DiscoveryStreamsWeb.Presence
-  alias DiscoveryStreams.TopicSubscriber
   alias DiscoveryStreams.TopicHelper
 
   @update_event "update"
@@ -15,13 +14,10 @@ defmodule DiscoveryStreamsWeb.StreamingChannel do
   intercept([@update_event])
 
   def join(channel, params, socket) do
-    channel
     "transformed-" <> id = determine_topic(channel)
-    id |> IO.inspect(label: "streaming_channel.ex:20")
-
 
     case Brook.get(:discovery_streams, :streaming_datasets_by_id, id) do
-      {:ok, system_name} ->
+      {:ok, _system_name} ->
         send(self(), :after_join)
         {:ok, assign(socket, :filter, create_filter_rules(params))}
 
@@ -76,7 +72,6 @@ defmodule DiscoveryStreamsWeb.StreamingChannel do
     |> determine_system_name()
     |> get_dataset_id()
     |> String.to_atom()
-    |> IO.inspect(label: "streaming_channel.ex:79")
     |> Cachex.stream!(query)
     |> Stream.filter(filter)
     |> Enum.each(fn msg -> push(socket, @update_event, msg) end)

@@ -6,7 +6,7 @@ defmodule DiscoveryStreams.MessageHandlerTest do
   import ExUnit.CaptureLog
 
   alias StreamingMetrics.ConsoleMetricCollector, as: MetricCollector
-  alias DiscoveryStreams.{CachexSupervisor, MessageHandler, TopicSubscriber}
+  alias DiscoveryStreams.{CachexSupervisor, MessageHandler}
   alias SmartCity.TestDataGenerator, as: TDG
 
   @outbound_records "records"
@@ -18,9 +18,6 @@ defmodule DiscoveryStreams.MessageHandlerTest do
     CachexSupervisor.create_cache(:"#{@dataset_2_id}")
     Cachex.clear(:"#{@dataset_1_id}")
     Cachex.clear(:"#{@dataset_2_id}")
-
-    allow TopicSubscriber.list_subscribed_topics(),
-      return: ["transformed-#{@dataset_1_id}", "transformed-#{@dataset_2_id}"]
 
     allow(Brook.get(any(), :streaming_datasets_by_id, @dataset_1_id),
       return: {:ok, "ceav__shuttles_on_a_map"}
