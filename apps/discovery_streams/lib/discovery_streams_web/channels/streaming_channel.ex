@@ -70,7 +70,9 @@ defmodule DiscoveryStreamsWeb.StreamingChannel do
 
     channel
     |> determine_system_name()
+    |> IO.inspect(label: "streaming_channel.ex:73")
     |> get_dataset_id()
+    |> IO.inspect(label: "streaming_channel.ex:74")
     |> String.to_atom()
     |> Cachex.stream!(query)
     |> Stream.filter(filter)

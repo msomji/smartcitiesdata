@@ -29,7 +29,7 @@ defmodule E2ETest do
   }
 
   @streaming_overrides %{
-    id: "strimmin",
+    id: "strimmin_id",
     technical: %{
       dataName: "strimmin",
       orgName: "usa",

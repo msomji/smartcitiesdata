@@ -74,7 +74,7 @@ defmodule Valkyrie.DatasetSupervisor do
           config: Application.get_env(:valkyrie, :topic_subscriber_config)
         ]
       ]
-    ]
+    ] |> IO.inspect(label: "dataset_supervisor.ex:77")
 
     {Valkyrie.Broadway, config}
   end

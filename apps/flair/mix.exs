@@ -35,11 +35,11 @@ defmodule Flair.MixProject do
   defp deps do
     [
       {:elsa, "~> 0.12.3"},
-      {:flow, "~> 0.14"},
-      {:gen_stage, "~> 0.14"},
+      {:flow, "~> 1.0.0"},
+      {:gen_stage, "~> 1.0.0"},
       {:jason, "~> 1.1"},
       {:prestige, "~> 1.0"},
-      {:retry, "~> 0.13.0"},
+      {:retry, "~> 0.14"},
       {:statistics, "~> 0.6"},
       {:credo, "~> 1.1", only: :dev, runtime: false},
       {:excoveralls, "~> 0.11", only: :dev},
