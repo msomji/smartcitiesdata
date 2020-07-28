@@ -73,7 +73,7 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
         MapSet.new(subscribed_topics()) == MapSet.new(expected)
       end,
       dwell: 200,
-      max_tries: 50
+      max_tries: 100
     )
   end
 
@@ -83,7 +83,7 @@ defmodule DiscoveryStreams.TopicSubscriberTest do
         Enum.all?(expected, fn topic -> not match?({:error, _}, Cachex.count(String.to_atom(topic))) end)
       end,
       dwell: 200,
-      max_tries: 50
+      max_tries: 100
     )
   end
 
