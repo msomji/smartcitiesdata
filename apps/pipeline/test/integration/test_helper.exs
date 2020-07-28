@@ -11,4 +11,5 @@ defmodule Pipeline.TestHandler do
   end
 end
 
+Application.ensure_all_started(:pipeline)
 ExUnit.start()
