@@ -57,7 +57,7 @@ defmodule AndiWeb.EditLiveView.UrlForm do
         </div>
 
         <div class="form-section">
-          <%= f = form_for @changeset, "#", [phx_change: :validate, as: :form_data] %>
+          <%= f = form_for @changeset, "#", [phx_change: :validate, as: :form_data, id: "url-form-element"] %>
             <div class="component-edit-section--<%= @visibility %>">
               <div class="url-form-edit-section form-grid">
                 <div class="url-form__source-url">

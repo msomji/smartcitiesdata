@@ -24,7 +24,7 @@ defmodule AndiWeb.EditLiveView.DataDictionaryAddFieldEditor do
     <div id=<%= @id %> class="data-dictionary-add-field-editor data-dictionary-add-field-editor--<%= modifier %>">
     <div class="modal-form-container">
         <h2>Add New Field</h2>
-        <%= form = form_for @changeset, "#", [phx_change: :validate, phx_target: "##{id}", as: :field] %>
+        <%= form = form_for @changeset, "#", [phx_change: :validate, phx_target: "##{id}", as: :field, id: "add-field-form"] %>
             <div class="form-input-container">
               <div class="data-dictionary-add-field-editor__name form-block">
                 <div class="form-input">
@@ -51,8 +51,8 @@ defmodule AndiWeb.EditLiveView.DataDictionaryAddFieldEditor do
             </div>
 
             <div class="button-container">
-              <%= reset("CANCEL", phx_click: "cancel", phx_target: "##{id}", class: "btn") %>
-              <button class="btn submit_button" type="button" phx-click="add_field" phx-target="<%= @myself %>" >ADD FIELD</button>
+              <%= reset("CANCEL", phx_click: "cancel", phx_target: "##{id}", class: "btn", id: "add-field-cancel") %>
+              <button class="btn submit_button" type="button" phx-click="add_field" phx-target="<%= @myself %>" id="add-field-submit">ADD FIELD</button>
             </div>
           </form>
         </div>

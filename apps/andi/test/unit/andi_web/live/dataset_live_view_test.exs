@@ -109,7 +109,7 @@ defmodule AndiWeb.DatasetLiveViewTest do
       {:ok, view, _html} = live(conn, @url_path <> "?order-by=dataTitle&order-dir=asc")
 
       render_change(view, :search, %{"search-value" => "search"})
-      assert_redirect(view, @url_path <> "?order-by=dataTitle&order-dir=asc&search=search")
+      assert_patch(view, @url_path <> "?order-by=dataTitle&order-dir=asc&search=search")
     end
   end
 
@@ -167,7 +167,7 @@ defmodule AndiWeb.DatasetLiveViewTest do
                |> render_change(:search, %{"search-value" => search_text})
                |> get_values("input.datasets-index__search-input")
 
-      assert_redirect(view, @url_path <> "?search=" <> search_text)
+      assert_patch(view, @url_path <> "?search=Some+search")
     end
   end
 
@@ -212,7 +212,7 @@ defmodule AndiWeb.DatasetLiveViewTest do
                |> render_submit(:search, %{"search-value" => search_text})
                |> get_values("input.datasets-index__search-input")
 
-      assert_redirect(view, @url_path <> "?search=" <> search_text)
+      assert_patch(view, @url_path <> "?search=Some+text")
     end
 
     test "Search Submit succeeds even with missing fields", %{conn: conn} do

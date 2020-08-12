@@ -28,8 +28,8 @@ defmodule AndiWeb.EditLiveView.DataDictionaryTree do
           <% {icon_modifier, selected_modifier} = get_action(field, assigns) %>
 
           <div class="data-dictionary-tree-field data-dictionary-tree__field data-dictionary-tree__field--<%= icon_modifier %> data-dictionary-tree__field--<%= selected_modifier %>">
-          <div class="data-dictionary-tree-field__action" phx-click="<%= if is_set?(field, :subSchema), do: "toggle_expanded", else: "toggle_selected" %>" phx-value-field-id="<%= input_value(field, :id) %>" phx-value-index="<%= field.index %>" phx-value-name="<%= field.name %>" phx-value-id="<%= field.id %>" phx-target="#<%= @root_id %>"></div>
-          <div class="data-dictionary-tree-field__text" phx-click="toggle_selected" phx-value-field-id="<%= input_value(field, :id) %>" phx-value-index="<%= field.index %>" phx-value-name="<%= field.name %>" phx-value-id="<%= field.id %>" phx-target="#<%= @root_id %>">
+          <div class="data-dictionary-tree-field__action" id="<%=  input_value(field, :id) %>-action" phx-click="<%= if is_set?(field, :subSchema), do: "toggle_expanded", else: "toggle_selected" %>" phx-value-field-id="<%= input_value(field, :id) %>" phx-value-index="<%= field.index %>" phx-value-name="<%= field.name %>" phx-value-id="<%= field.id %>" phx-target="#<%= @root_id %>"></div>
+          <div class="data-dictionary-tree-field__text" id="<%=  input_value(field, :id) %>-text" phx-click="toggle_selected" phx-value-field-id="<%= input_value(field, :id) %>" phx-value-index="<%= field.index %>" phx-value-name="<%= field.name %>" phx-value-id="<%= field.id %>" phx-target="#<%= @root_id %>">
               <div class="data-dictionary-tree-field__name data-dictionary-tree-field-attribute"><%= input_value(field, :name) %></div>
               <div class="data-dictionary-tree-field__type data-dictionary-tree-field-attribute"><%= input_value(field, :type) %></div>
             </div>

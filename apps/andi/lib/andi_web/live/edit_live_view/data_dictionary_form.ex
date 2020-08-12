@@ -72,7 +72,7 @@ defmodule AndiWeb.EditLiveView.DataDictionaryForm do
       </div>
 
       <div class="form-section">
-        <%= f = form_for @changeset, "#", [phx_change: :validate, as: :form_data, multipart: true] %>
+        <% f = form_for @changeset, "#", [phx_change: :validate, as: :form_data, multipart: true, id: "dictionary-field-form"] %>
         <%= f = Map.put(f, :errors, @changeset.errors) %>
 
           <div class="component-edit-section--<%= @visibility %>">
@@ -93,13 +93,13 @@ defmodule AndiWeb.EditLiveView.DataDictionaryForm do
                 </div>
               <% end %>
 
-              <div class="data-dictionary-form__tree-section">
+              <div class="data-dictionary-form__tree-section" id="tree-section">
                 <div class="data-dictionary-form__tree-header data-dictionary-form-tree-header">
                   <div class="label">Enter/Edit Fields</div>
                   <div class="label label--inline">TYPE</div>
                 </div>
 
-                <div class="data-dictionary-form__tree-content data-dictionary-form-tree-content">
+                <div class="data-dictionary-form__tree-content data-dictionary-form-tree-content" id="data-form">
                   <%= live_component(@socket, DataDictionaryTree, id: :data_dictionary_tree, root_id: :data_dictionary_tree, form: @changeset |> form_for(nil), field: :schema, selected_field_id: @selected_field_id, new_field_initial_render: @new_field_initial_render, add_field_event_name: "add_data_dictionary_field") %>
                 </div>
 
@@ -289,7 +289,11 @@ defmodule AndiWeb.EditLiveView.DataDictionaryForm do
     new_selected_field_id =
       case new_selected_field do
         :no_dictionary ->
-          :no_dictionary
+          if deleted_field_parent_id == socket.assigns.technical_id do
+            :no_dictionary
+          else
+            deleted_field_parent_id
+          end
 
         new_selected ->
           Changeset.fetch_field!(new_selected, :id)
@@ -407,7 +411,7 @@ defmodule AndiWeb.EditLiveView.DataDictionaryForm do
           %{current_form | source: new_form_template.source, params: new_form_template.params}
       end
 
-    send(socket.parent_pid, :form_update)
+    if socket.parent_pid, do: send(socket.parent_pid, :form_update)
 
     {:noreply, assign(socket, changeset: new_changeset, current_data_dictionary_item: updated_current_field) |> update_validation_status()}
   end

@@ -57,7 +57,7 @@ defmodule Andi.MixProject do
       {:phoenix_ecto, "~> 4.0"},
       {:phoenix_html, "~> 2.14.1"},
       {:phoenix_live_reload, "~> 1.2", only: [:dev, :integration]},
-      {:phoenix_live_view, "~>0.4"},
+      {:phoenix_live_view, "~> 0.14"},
       {:phoenix_pubsub, "~> 1.1"},
       {:placebo, "~> 2.0.0-rc2", only: [:dev, :test, :integration]},
       {:plug_cowboy, "~> 2.1"},

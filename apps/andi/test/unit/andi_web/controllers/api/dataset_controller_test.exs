@@ -182,7 +182,7 @@ defmodule AndiWeb.API.DatasetControllerTest do
 
   describe "GET dataset definitions from /api/dataset/" do
     setup %{conn: conn, request: request} do
-      [conn: get(conn, @get_datasets_route, request)]
+      [conn: get(conn, @get_datasets_route)]
     end
 
     @tag capture_log: true
