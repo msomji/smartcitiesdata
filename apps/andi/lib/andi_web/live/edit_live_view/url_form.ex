@@ -133,7 +133,7 @@ defmodule AndiWeb.EditLiveView.UrlForm do
   end
 
   def handle_event("validate", _, socket) do
-    send(socket.parent_pid, :page_error)
+    if socket.parent_pid, do: send(socket.parent_pid, :page_error)
 
     {:noreply, socket}
   end
@@ -203,7 +203,7 @@ defmodule AndiWeb.EditLiveView.UrlForm do
   end
 
   def handle_info({_, {:test_results, results}}, socket) do
-    send(socket.parent_pid, {:test_results, results})
+    if socket.parent_pid, do: send(socket.parent_pid, {:test_results, results})
     {:noreply, assign(socket, test_results: results, testing: false)}
   end
 
@@ -211,7 +211,7 @@ defmodule AndiWeb.EditLiveView.UrlForm do
   # Expected errors should be handled in specific handlers.
   # Flags should be reset here.
   def handle_info({:EXIT, _pid, {_error, _stacktrace}}, socket) do
-    send(socket.parent_pid, :page_error)
+    if socket.parent_pid, do: send(socket.parent_pid, :page_error)
     {:noreply, assign(socket, page_error: true, testing: false, save_success: false)}
   end
 
@@ -222,7 +222,7 @@ defmodule AndiWeb.EditLiveView.UrlForm do
 
   defp complete_validation(changeset, socket) do
     new_changeset = Map.put(changeset, :action, :update)
-    send(socket.parent_pid, :form_update)
+    if socket.parent_pid, do: send(socket.parent_pid, :form_update)
 
     {:noreply, assign(socket, changeset: new_changeset) |> update_validation_status()}
   end

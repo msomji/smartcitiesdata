@@ -174,14 +174,17 @@ defmodule AndiWeb.EditLiveViewTest do
       metadata_view = find_live_child(view, "metadata_form_editor")
       finalize_view = find_live_child(view, "finalize_form_editor")
 
-      render_change(metadata_view, :validate, %{"form_data" => form_data, "_target" => ["form_data", "dataTitle"]})
-      render_change(metadata_view, :validate_system_name, %{})
-      render_change(finalize_view, :publish)
+      metadata_view |> element("#metadata-form-element") |> render_change(%{"form_data" => form_data, "_target" => ["form_data", "dataTitle"]})
+      metadata_view |> element("#system-name-input") |> render_blur()
+      metadata_view |> element("#publish-button") |> render_click()
+      # render_change(metadata_view, :validate, %{"form_data" => form_data, "_target" => ["form_data", "dataTitle"]})
+      # render_change(metadata_view, :validate_system_name, %{})
+      # render_change(finalize_view, :publish)
 
       assert render(view) |> get_text("#snackbar") =~ "errors"
     end
 
-    data_test "allows saving with empty #{field}", %{conn: conn} do
+    data_test "allows publishing with empty #{field}", %{conn: conn} do
       smrt_dataset = TDG.create_dataset(%{technical: %{field => %{"x" => "y"}}})
 
       {:ok, dataset} = Datasets.update(smrt_dataset)
@@ -189,6 +192,8 @@ defmodule AndiWeb.EditLiveViewTest do
       form_data = %{"sourceUrl" => "cam.com", field => %{"x" => "y"}}
 
       assert {:ok, view, html} = live_isolated(conn, AndiWeb.EditLiveView, session: %{"dataset" => dataset})
+      url_form_editor = find_live_child(view, "url_form_editor")
+      finalize_form_editor = find_live_child(view, "finalize_form_editor")
 
       view |> element("#url-form-element") |> render_change(%{"form_data" => form_data})
       view |> element("#publish-button") |> render_click()

@@ -168,6 +168,7 @@ defmodule AndiWeb.EditLiveView.FinalizeForm do
   end
 
   def handle_event("publish", _, socket) do
+    socket.parent_pid |> IO.inspect(label: "finalize_form.ex:171")
     send(socket.parent_pid, :publish)
 
     {:noreply, socket}
